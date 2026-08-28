@@ -1,5 +1,6 @@
 #!/bin/bash
 deb_ver=`cat /etc/debian_version | tr -d '\n'`
+username=`logname | tr -d '\n'`
 
 if [ ! -d "./.system_backup" ]; then
 sudo mkdir ./.system_backup
@@ -47,6 +48,15 @@ sudo cp -rf ./boot/config-nomal.txt /boot/config.txt
 if [[ "$deb_ver" = "13.1" ]] || [[ "$deb_ver" > "13.1" ]]; then
 sudo sed -i '/ video/s/ video.*$//' /boot/firmware/cmdline.txt
 sudo sed -i "/xrandr/d" /etc/xdg/lxsession/rpd-x/autostart
+if [ -f /home/$username/.bash_profile ]; then
+sudo cp -rf /home/$username/.bash_profile ./.system_backup
+sudo rm -rf /home/$username/.bash_profile
+fi
+if [ -f /usr/share/X11/xorg.conf.d/99-fbturbo.~ ]; then
+sudo cp -rf /usr/share/X11/xorg.conf.d/99-fbturbo.~ ./.system_backup
+sudo rm -rf /usr/share/X11/xorg.conf.d/99-fbturbo.~
+fi
+
 #sudo cp -rf ./usr/cmdline.txt-original /boot/firmware/cmdline.txt
 #sudo cp ./etc/autostart /etc/xdg/lxsession/rpd-x/
 fi
